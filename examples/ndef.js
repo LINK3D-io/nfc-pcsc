@@ -22,7 +22,10 @@ nfc.on('reader', async reader => {
 	// Login to server
 	const user = "jon";
 	const loginData = await login(user, "catcatcat");
-	request.setAccessToken(loginData.credentials.access);
+	// console.log('loginData:', loginData);
+	if (loginData) {
+		request.setAccessToken(loginData.credentials.access);
+	}
 
 	console.log(`${reader.reader.name}  device attached`);
 
@@ -51,7 +54,7 @@ nfc.on('reader', async reader => {
 		   * 2 - WRITE A NDEF MESSAGE AND ITS RECORDS
 		   */
 		  const message = [
-			{ type: 'uri', uri: 'https://link3d.io/'+uniqueId },
+			{ type: 'uri', uri: 'https://link3d.io/tag/'+uniqueId },
 		  ]
 
 		  // Prepare the buffer to write on the card
@@ -65,11 +68,12 @@ nfc.on('reader', async reader => {
 			console.log('Data have been written successfully.')
 			// Add tag to server
 			console.log('addTag:', uniqueId);
-			await addTag(loginData.sponsorId, uniqueId);
+			const tag = await addTag(loginData.sponsorId, uniqueId);
+			console.log('tag:', tag);
 		  }
 
 		} catch (err) {
-		console.error(`error when reading data`, err);
+		console.error(`error when reading data`);
 		}
 
 
@@ -113,7 +117,7 @@ nfc.on('reader', async reader => {
 			}
 
 		} catch (err) {
-			console.error(`error when reading data`, err);
+			console.error(`error when reading data`);
 		}
 
 	});

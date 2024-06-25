@@ -36,7 +36,7 @@ nfc.on('reader', async reader => {
 
 	reader.on('card', async card => {
 
-		// pretty.info(`card detected`, reader, card);
+		pretty.info(`card detected`, reader, card);
 
 		const blockSize = 4;
 		const blockCount = 15;
@@ -81,7 +81,7 @@ nfc.on('reader', async reader => {
 				// Add tag to server
 				// await addTag(loginData.sponsorId, uniqueId);
 				pretty.info(`Added tag to server:`, uniqueId);
-				pretty.info(`Wrote URL:`, ndefData);
+				// pretty.info(`Wrote URL:`, ndefData);
 			} catch (err) {
 				pretty.error(`Error when writing data to the card:`, reader, err);
 			}

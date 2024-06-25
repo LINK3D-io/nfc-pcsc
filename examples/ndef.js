@@ -6,14 +6,23 @@
 // #############
 
 import { NFC, TAG_ISO_14443_3, TAG_ISO_14443_4, KEY_TYPE_A, KEY_TYPE_B } from '../src/index';
+import request from '../src/services/request';
+import { login } from '../src/services/auth';
+import { addTag } from '../src/services/tags';
+import { v4 as uuidv4 } from 'uuid';
 // import pretty from './pretty';
 
 const nfcCard = require('nfccard-tool');
 
-
 const nfc = new NFC();
 
-nfc.on('reader', reader => {
+console.log("NDEF")
+
+nfc.on('reader', async reader => {
+	// Login to server
+	const user = "jon";
+	const loginData = await login(user, "catcatcat");
+	request.setAccessToken(loginData.credentials.access);
 
 	console.log(`${reader.reader.name}  device attached`);
 
@@ -36,14 +45,13 @@ nfc.on('reader', reader => {
 		const cardHeader = await reader.read(0, 20);
 
 		const tag = nfcCard.parseInfo(cardHeader);
+		const uniqueId = uuidv4();
 
 		  /**
 		   * 2 - WRITE A NDEF MESSAGE AND ITS RECORDS
 		   */
 		  const message = [
-			{ type: 'text', text: 'I\'m a text message', language: 'en' },
-			{ type: 'uri', uri: 'https://github.com/somq/nfccard-tool' },
-			{ type: 'aar', packageName: 'com.github.nfccardtool' },
+			{ type: 'uri', uri: 'https://link3d.io/'+uniqueId },
 		  ]
 
 		  // Prepare the buffer to write on the card
@@ -55,6 +63,9 @@ nfc.on('reader', reader => {
 		  // Success !
 		  if (preparationWrite) {
 			console.log('Data have been written successfully.')
+			// Add tag to server
+			console.log('addTag:', uniqueId);
+			await addTag(loginData.sponsorId, uniqueId);
 		  }
 
 		} catch (err) {

@@ -11,7 +11,8 @@ class Request {
     this.accessToken = '';
 
     // Set base URL and other default configurations
-    this.axios.defaults.baseURL = 'http://localhost:5001';
+	// this.axios.defaults.baseURL = 'http://localhost:5001/';
+    this.axios.defaults.baseURL = 'https://api.link3d.io/';
     this.axios.defaults.withCredentials = true;
 
     // Setup response interceptor to handle global error scenarios

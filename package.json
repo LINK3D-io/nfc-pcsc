@@ -53,6 +53,7 @@
     "@pokusew/pcsclite": "^0.6.0",
     "axios": "^1.7.2",
     "ndef": "^0.2.0",
+    "nfccard-tool": "^0.1.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

@@ -62,7 +62,7 @@ nfc.on('reader', async reader => {
 		  // Success !
 		  if (preparationWrite) {
 			// Add tag to server
-			const tag = await addTag(1, uniqueId);
+			const tag = await addTag(3, uniqueId);
 			console.log('Data written successfully:', message)
 		  }
 

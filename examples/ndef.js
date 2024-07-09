@@ -5,7 +5,7 @@
 // Read NDEF formatted data
 // #############
 
-import { NFC } from '../src/index';
+import { NFC, TAG_ISO_14443_3, TAG_ISO_14443_4, KEY_TYPE_A, KEY_TYPE_B } from '../src/index';
 import request from '../src/services/request';
 import { login } from '../src/services/auth';
 import { addTag } from '../src/services/tags';
@@ -16,10 +16,13 @@ const nfcCard = require('nfccard-tool');
 
 const nfc = new NFC();
 
+console.log("NDEF")
+
 nfc.on('reader', async reader => {
 	// Login to server
 	const user = "jon";
 	const loginData = await login(user, "catcatcat");
+	// console.log('loginData:', loginData);
 	if (loginData) {
 		request.setAccessToken(loginData.credentials.access);
 	}
@@ -28,7 +31,7 @@ nfc.on('reader', async reader => {
 
   reader.on('card', async card => {
 
-	// console.log(`card detected`, card);
+	console.log(`card detected`, card);
 
 
 	/**
@@ -42,8 +45,9 @@ nfc.on('reader', async reader => {
 		 *  Read header: we need to verify if we have read and write permissions
 		 *               and if prepared message length can fit onto the tag.
 		 */
-		// const cardHeader = await reader.read(0, 20);
-		// const tag = nfcCard.parseInfo(cardHeader);
+		const cardHeader = await reader.read(0, 20);
+
+		const tag = nfcCard.parseInfo(cardHeader);
 		const uniqueId = uuidv4();
 
 		  /**
@@ -61,9 +65,9 @@ nfc.on('reader', async reader => {
 
 		  // Success !
 		  if (preparationWrite) {
-			// Add tag to server
-			const tag = await addTag(3, uniqueId);
-			console.log('Data written successfully:', message)
+			console.log('Data have been written successfully: ',uniqueId)
+			await addTag(3, uniqueId);
+			console.log('Tag added to the database: ',uniqueId)
 		  }
 
 		} catch (err) {
@@ -104,8 +108,10 @@ nfc.on('reader', async reader => {
 				// Parse the buffer as a NDEF raw message
 				const NDEFMessage = nfcCard.parseNDEF(NDEFRawMessage);
 
+				// console.log('NDEFMessage:', NDEFMessage);
+
 			} else {
-				console.log('Could not parse anything from this tag: \n The tag is either empty, locked, has a wrong NDEF format or is unreadable.')
+				console.error('Could not parse anything from this tag: \n The tag is either empty, locked, has a wrong NDEF format or is unreadable.')
 			}
 
 		} catch (err) {
@@ -114,16 +120,16 @@ nfc.on('reader', async reader => {
 
 	});
 
-	// reader.on('card.off', card => {
-	// 	console.log(`${reader.reader.name}  card removed`, card);
-	// });
+	reader.on('card.off', card => {
+		console.info(`${reader.reader.name}  card removed`, card);
+	});
 
 	reader.on('error', err => {
-		console.log(`${reader.reader.name}  an error occurred`, err);
+		console.error(`${reader.reader.name}  an error occurred`, err);
 	});
 
 	reader.on('end', () => {
-		console.log(`${reader.reader.name}  device removed`);
+		console.info(`${reader.reader.name}  device removed`);
 	});
 
 });

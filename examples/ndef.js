@@ -27,12 +27,11 @@ nfc.on('reader', async reader => {
 		request.setAccessToken(loginData.credentials.access);
 	}
 
-	console.log(`${reader.reader.name}  device attached`);
+	console.log(`${reader.reader.name}  device attached NDEF`);
 
-  reader.on('card', async card => {
+  	reader.on('card', async card => {
 
 	console.log(`card detected`, card);
-
 
 	/**
 	 * Write a card
@@ -55,6 +54,7 @@ nfc.on('reader', async reader => {
 		   */
 		  const message = [
 			{ type: 'uri', uri: 'https://link3d.io/tag/'+uniqueId },
+			// { type: 'uri', uri: 'http://localhost:3000/tag/'+uniqueId },
 		  ]
 
 		  // Prepare the buffer to write on the card
@@ -66,7 +66,7 @@ nfc.on('reader', async reader => {
 		  // Success !
 		  if (preparationWrite) {
 			console.log('Data have been written successfully: ',uniqueId)
-			await addTag(3, uniqueId);
+			await addTag(8, null, uniqueId, "DEFAULT");
 			console.log('Tag added to the database: ',uniqueId)
 		  }
 

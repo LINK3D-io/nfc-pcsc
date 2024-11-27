@@ -22,9 +22,9 @@ nfc.on('reader', async reader => {
 	// Login to server
 	const user = "jon";
 	const loginData = await login(user, "catcatcat");
-	// console.log('loginData:', loginData);
+	console.log('loginData:', loginData);
 	if (loginData) {
-		request.setAccessToken(loginData.credentials.access);
+		request.setAccessToken(loginData.credentials);
 	}
 
 	console.log(`${reader.reader.name}  device attached NDEF`);
@@ -66,7 +66,7 @@ nfc.on('reader', async reader => {
 		  // Success !
 		  if (preparationWrite) {
 			console.log('Data have been written successfully: ',uniqueId)
-			await addTag(8, null, uniqueId, "DEFAULT");
+			await addTag(5, null, uniqueId, "DEFAULT");
 			console.log('Tag added to the database: ',uniqueId)
 		  }
 

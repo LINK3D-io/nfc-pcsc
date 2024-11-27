@@ -86,8 +86,11 @@ class Request {
   }
 
   setAccessToken(accessToken) {
+    console.log('accessToken', accessToken);
     this.accessToken = accessToken;
-    this.axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    // this.axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    this.axios.defaults.headers.common["Authorization"] =
+    `Bearer ${accessToken}`;
   }
 }
 
